@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    networks:
+      - backend
+    ports:
+      - 3306:3306
+  app:
+    image: git.graciousstudios.nl:4567/docker/php:7.1
+    environment:
+      - NGINX_WEB_ROOT=/var/www/web
+      - NGINX_WEB_INDEX=app_dev.php
+    volumes:
+      - ./:/var/www
+    ports:
+      - 80:80
+    networks:
+      - backend
+    working_dir: /var/www
+    entrypoint: chaperone
+    command: --config /var/www/chaperone.conf
+networks:
+  backend:
+    driver: bridge
